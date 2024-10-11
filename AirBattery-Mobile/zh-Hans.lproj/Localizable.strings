@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  AirBattery
+
+  Created by apple on 2024/10/9.
+  
+*/
+
+"Updated %d mins ago" = "%d 分钟前更新";
+"Please set NearCast Group ID first!" = "请先设置要加入的 NearCast 小组 ID";
+"Settings" = "设置";
+"Group ID" = "小组 ID";
+"Paste" = "粘贴";
+"Clear" = "清空";
+"Done" = "完成";
+"Joined the group successfully." = "已成功加入指定的小组.";
+"Invalid ID" = "无效 ID";
+"Please set a valid NearCast ID!" = "请使用有效的小组 ID!";
+"Debug Info" = "调试信息";
+"Available Peers" = "已知节点";
+"Data Timeout" = "数据超时";
+"Peer List" = "节点列表";
+"Local ID" = "本机 ID";
+"Copy Local ID" = "复制本机 ID";
+"(No Wi-Fi Connection)" = "(未连接 Wi-Fi)";
+"No Wi-Fi Connection" = "未连接 Wi-Fi";
+"Please connect to Wi-Fi first!" = "请在 Wi-Fi 环境下使用!";
+"Force Refresh" = "强制刷新";
+"Hide Debug Info" = "隐藏调试信息";
+"Show Debug Info" = "显示调试信息";
+"Others" = "其他设置";
+"Never" = "永不";
+"Remove Offline Devices" = "移除超时设备";
+" mins" = "分钟";

@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  AirBattery
+
+  Created by apple on 2024/10/9.
+  
+*/
+
+"NSLocalNetworkUsageDescription" = "AirBattery 将通过局域网从 Mac 端拉取数据";
