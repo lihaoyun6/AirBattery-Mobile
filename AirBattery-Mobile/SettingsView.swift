@@ -38,7 +38,7 @@ struct SettingsView: View {
                         }
                         print("ℹ️ New version available: \(latestUpdate.version), current version: \(currentAppVersion)")
                     } else {
-                        alertTitle = "You’re up to date".local
+                        alertTitle = "You're up to date".local
                         alertMessage = "v\(latestUpdate.version) " + "is currently the newest version available.".local
                         showAlert = true
                         print("ℹ️ You're up to date")
