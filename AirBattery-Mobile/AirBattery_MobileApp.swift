@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct AirBatteryApp: App {
+    @AppStorage("firstRun") var firstRun = true
     @AppStorage("ncGroupID") var ncGroupID = ""
     @Environment(\.scenePhase) var scenePhase
     @StateObject private var netcastService = MultipeerService(serviceType: "airbattery-nc")
@@ -72,26 +73,29 @@ struct AirBatteryApp: App {
         }.onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
                 print("ℹ️ App actived")
-                //netcastService.resume()
+                if !firstRun {
                 loading = true
                 let data = AirBatteryModel.shared.devices
-                checkWiFiConnection { isConnected in
-                    if isConnected {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            netcastService.refeshAll()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                if data == AirBatteryModel.shared.devices {
-                                    netcastService.refeshAll()
+                    checkWiFiConnection { isConnected in
+                        if isConnected {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                netcastService.refeshAll()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    if data == AirBatteryModel.shared.devices {
+                                        netcastService.refeshAll()
+                                    }
+                                    loading = false
                                 }
-                                loading = false
                             }
+                        } else {
+                            loading = false
+                            alertTitle = "No Wi-Fi Connection".local
+                            alertMessage = "Please connect to Wi-Fi first!".local
+                            showAlert = true
                         }
-                    } else {
-                        loading = false
-                        alertTitle = "No Wi-Fi Connection".local
-                        alertMessage = "Please connect to Wi-Fi first!".local
-                        showAlert = true
                     }
+                } else {
+                    firstRun = false
                 }
             } else if newPhase == .background {
                 //netcastService.stop()
