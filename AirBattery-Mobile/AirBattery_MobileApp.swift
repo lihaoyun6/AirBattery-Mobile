@@ -14,6 +14,27 @@ struct AirBatteryApp: App {
     @StateObject private var netcastService = MultipeerService(serviceType: "airbattery-nc")
     @State private var loading = false
     
+    init() {
+        fetchUpdateData(from: updateURL) { result in
+            switch result {
+            case .success(let updateData):
+                if let latestUpdate = getLatestSupportedVersion(for: updateData) {
+                    if let currentAppVersion = currentAppVersion,
+                       currentAppVersion.compare(latestUpdate.version, options: .numeric) == .orderedAscending {
+                        print("有新版本可用：\(latestUpdate.version)，当前版本：\(currentAppVersion)")
+                        // 在这里可以处理更新逻辑，例如提醒用户更新
+                    } else {
+                        print("当前已是最新版本")
+                    }
+                } else {
+                    print("没有找到支持当前系统版本的更新信息")
+                }
+            case .failure(let error):
+                print("获取更新数据失败: \(error)")
+            }
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView(loading: $loading)

@@ -238,21 +238,25 @@ func getDeviceIcon(_ d: Device) -> String {
             }
         }
         return "airpodspro.case.fill"
-    case "Mac":
-        let m = (d.deviceModel ?? "").lowercased()//.replacingOccurrences(of: " ", with: "")
-        if m.contains("macbook") {
-            if let icon = macList[d.deviceModel!] { return icon }
-            return "macbook"
-        }
-        if m.contains("macmini") { return "macmini.fill" }
-        if m.contains("macstudio") { return "macstudio.fill" }
-        if m.contains("macpro") { return "macpro.gen3.fill" }
-        if m.contains("imac") { return "desktopcomputer" }
+    case "mac":
         return "display"
+    case "macbook", "macbookpro", "macbookair":
+        if let icon = macBookList[d.deviceModel ?? ""] { return icon }
+        return "macbook"
+    case "macmini":
+        return "macmini.fill"
+    case "macstudio":
+        return "macstudio.fill"
+    case "macpro":
+        if let icon = macProList[d.deviceModel ?? ""] { return icon }
+        return "macpro.gen3.fill"
+    case "imac":
+        return "desktopcomputer"
     default:
         return "questionmark.circle.fill"
     }
 }
 
-let macList = ["MacBookPro1,1": "macbook.gen1", "MacBookPro1,2": "macbook.gen1", "MacBookPro2,1": "macbook.gen1", "MacBookPro2,2": "macbook.gen1", "MacBookPro3,1": "macbook.gen1", "MacBookPro4,1": "macbook.gen1", "MacBookPro5,1": "macbook.gen1", "MacBookPro5,2": "macbook.gen1", "MacBookPro5,3": "macbook.gen1", "MacBookPro5,4": "macbook.gen1", "MacBookPro5,5": "macbook.gen1", "MacBookPro6,1": "macbook.gen1", "MacBookPro6,2": "macbook.gen1", "MacBookPro7,1": "macbook.gen1", "MacBookPro8,1": "macbook.gen1", "MacBookPro8,2": "macbook.gen1", "MacBookPro8,3": "macbook.gen1", "MacBookPro9,1": "macbook.gen1", "MacBookPro9,2": "macbook.gen1", "MacBookPro10,1": "macbook.gen1", "MacBookPro10,2": "macbook.gen1", "MacBookPro11,1": "macbook.gen1", "MacBookPro11,2": "macbook.gen1", "MacBookPro11,3": "macbook.gen1", "MacBookPro11,4": "macbook.gen1", "MacBookPro11,5": "macbook.gen1", "MacBookPro12,1": "macbook.gen1", "MacBookPro13,1": "macbook.gen1", "MacBookPro13,2": "macbook.gen1", "MacBookPro13,3": "macbook.gen1", "MacBookPro14,1": "macbook.gen1", "MacBookPro14,2": "macbook.gen1", "MacBookPro14,3": "macbook.gen1", "MacBookPro15,1": "macbook.gen1", "MacBookPro15,2": "macbook.gen1", "MacBookPro15,3": "macbook.gen1", "MacBookPro15,4": "macbook.gen1", "MacBookPro16,1": "macbook.gen1", "MacBookPro16,2": "macbook.gen1", "MacBookPro16,3": "macbook.gen1", "MacBookPro16,4": "macbook.gen1", "MacBookPro17,1": "macbook.gen1", "MacBookPro18,1": "macbook", "MacBookPro18,2": "macbook", "MacBookPro18,3": "macbook", "MacBookPro18,4": "macbook", "Mac14,5": "macbook", "Mac14,6": "macbook", "Mac14,7": "macbook.gen1", "Mac14,9": "macbook", "Mac14,10": "macbook", "Mac15,3": "macbook", "Mac15,6": "macbook", "Mac15,7": "macbook", "Mac15,8": "macbook", "Mac15,9": "macbook", "Mac15,10": "macbook", "Mac15,11": "macbook", "MacBookAir1,1": "macbook.gen1", "MacBookAir2,1": "macbook.gen1", "MacBookAir3,1": "macbook.gen1", "MacBookAir3,2": "macbook.gen1", "MacBookAir4,1": "macbook.gen1", "MacBookAir4,2": "macbook.gen1", "MacBookAir5,1": "macbook.gen1", "MacBookAir5,2": "macbook.gen1", "MacBookAir6,1": "macbook.gen1", "MacBookAir6,2": "macbook.gen1", "MacBookAir7,1": "macbook.gen1", "MacBookAir7,2": "macbook.gen1", "MacBookAir8,1": "macbook.gen1", "MacBookAir8,2": "macbook.gen1", "MacBookAir9,1": "macbook.gen1", "MacBookAir10,1": "macbook.gen1", "Mac14,2": "macbook", "Mac14,15": "macbook", "Mac15,12": "macbook", "Mac15,13": "macbook", "MacBook1,1": "macbook.gen1", "MacBook2,1": "macbook.gen1", "MacBook3,1": "macbook.gen1", "MacBook4,1": "macbook.gen1", "MacBook5,1": "macbook.gen1", "MacBook5,2": "macbook.gen1", "MacBook6,1": "macbook.gen1", "MacBook7,1": "macbook.gen1", "MacBook8,1": "macbook.gen1", "MacBook9,1": "macbook.gen1", "MacBook10,1": "macbook.gen1"]
+let macBookList = ["MacBookPro1,1": "macbook.gen1", "MacBookPro1,2": "macbook.gen1", "MacBookPro2,1": "macbook.gen1", "MacBookPro2,2": "macbook.gen1", "MacBookPro3,1": "macbook.gen1", "MacBookPro4,1": "macbook.gen1", "MacBookPro5,1": "macbook.gen1", "MacBookPro5,2": "macbook.gen1", "MacBookPro5,3": "macbook.gen1", "MacBookPro5,4": "macbook.gen1", "MacBookPro5,5": "macbook.gen1", "MacBookPro6,1": "macbook.gen1", "MacBookPro6,2": "macbook.gen1", "MacBookPro7,1": "macbook.gen1", "MacBookPro8,1": "macbook.gen1", "MacBookPro8,2": "macbook.gen1", "MacBookPro8,3": "macbook.gen1", "MacBookPro9,1": "macbook.gen1", "MacBookPro9,2": "macbook.gen1", "MacBookPro10,1": "macbook.gen1", "MacBookPro10,2": "macbook.gen1", "MacBookPro11,1": "macbook.gen1", "MacBookPro11,2": "macbook.gen1", "MacBookPro11,3": "macbook.gen1", "MacBookPro11,4": "macbook.gen1", "MacBookPro11,5": "macbook.gen1", "MacBookPro12,1": "macbook.gen1", "MacBookPro13,1": "macbook.gen1", "MacBookPro13,2": "macbook.gen1", "MacBookPro13,3": "macbook.gen1", "MacBookPro14,1": "macbook.gen1", "MacBookPro14,2": "macbook.gen1", "MacBookPro14,3": "macbook.gen1", "MacBookPro15,1": "macbook.gen1", "MacBookPro15,2": "macbook.gen1", "MacBookPro15,3": "macbook.gen1", "MacBookPro15,4": "macbook.gen1", "MacBookPro16,1": "macbook.gen1", "MacBookPro16,2": "macbook.gen1", "MacBookPro16,3": "macbook.gen1", "MacBookPro16,4": "macbook.gen1", "MacBookPro17,1": "macbook.gen1", "MacBookPro18,1": "macbook", "MacBookPro18,2": "macbook", "MacBookPro18,3": "macbook", "MacBookPro18,4": "macbook", "Mac14,5": "macbook", "Mac14,6": "macbook", "Mac14,7": "macbook.gen1", "Mac14,9": "macbook", "Mac14,10": "macbook", "Mac15,3": "macbook", "Mac15,6": "macbook", "Mac15,7": "macbook", "Mac15,8": "macbook", "Mac15,9": "macbook", "Mac15,10": "macbook", "Mac15,11": "macbook", "MacBookAir1,1": "macbook.gen1", "MacBookAir2,1": "macbook.gen1", "MacBookAir3,1": "macbook.gen1", "MacBookAir3,2": "macbook.gen1", "MacBookAir4,1": "macbook.gen1", "MacBookAir4,2": "macbook.gen1", "MacBookAir5,1": "macbook.gen1", "MacBookAir5,2": "macbook.gen1", "MacBookAir6,1": "macbook.gen1", "MacBookAir6,2": "macbook.gen1", "MacBookAir7,1": "macbook.gen1", "MacBookAir7,2": "macbook.gen1", "MacBookAir8,1": "macbook.gen1", "MacBookAir8,2": "macbook.gen1", "MacBookAir9,1": "macbook.gen1", "MacBookAir10,1": "macbook.gen1", "Mac14,2": "macbook", "Mac14,15": "macbook", "Mac15,12": "macbook", "Mac15,13": "macbook", "MacBook1,1": "macbook.gen1", "MacBook2,1": "macbook.gen1", "MacBook3,1": "macbook.gen1", "MacBook4,1": "macbook.gen1", "MacBook5,1": "macbook.gen1", "MacBook5,2": "macbook.gen1", "MacBook6,1": "macbook.gen1", "MacBook7,1": "macbook.gen1", "MacBook8,1": "macbook.gen1", "MacBook9,1": "macbook.gen1", "MacBook10,1": "macbook.gen1"]
 
+let macProList = ["MacPro1,1": "macpro.gen1.fill", "MacPro2,1": "macpro.gen1.fill", "MacPro3,1": "macpro.gen1.fill", "MacPro4,1": "macpro.gen1.fill", "MacPro5,1": "macpro.gen1.fill", "MacPro6,1": "macpro.gen2.fill", "MacPro7,1": "macpro.gen3.fill", "Mac14,8": "macpro.gen3.fill"]
