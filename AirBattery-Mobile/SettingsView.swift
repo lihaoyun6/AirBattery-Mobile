@@ -10,7 +10,8 @@ import SwiftUI
 import MultipeerKit
 
 struct SettingsView: View {
-    @ObservedObject var netcastService: MultipeerService
+    @EnvironmentObject var netcastService: MultipeerService
+    @EnvironmentObject var updates: Updates
     @AppStorage("ncGroupID") var ncGroupID = ""
     @AppStorage("disappearTime") var disappearTime = 20
     
@@ -21,6 +22,38 @@ struct SettingsView: View {
     @State private var alertMessage = ""
     
     @Orientation var orientation
+    
+    func checkForUpdates() {
+        fetchUpdateData(from: updateSource) { result in
+            switch result {
+            case .success(let updateData):
+                if let latestUpdate = getLatestSupportedVersion(for: updateData) {
+                    if let currentAppVersion = currentAppVersion,
+                       currentAppVersion.compare(latestUpdate.version, options: .numeric) == .orderedAscending {
+                        DispatchQueue.main.async {
+                            updates.latest = latestUpdate
+                            alertTitle = "Update Available".local
+                            alertMessage = "v\(latestUpdate.version) " + "has been released,\nthe current version is".local + " v\(currentAppVersion)"
+                            showAlert = true
+                        }
+                        print("ℹ️ New version available: \(latestUpdate.version), current version: \(currentAppVersion)")
+                    } else {
+                        alertTitle = "You’re up to date".local
+                        alertMessage = "v\(latestUpdate.version) " + "is currently the newest version available.".local
+                        showAlert = true
+                        print("ℹ️ You're up to date")
+                    }
+                } else {
+                    print("ℹ️ No updates for current OS")
+                }
+            case .failure(let error):
+                alertTitle = "Update Error!".local
+                alertMessage = "An error occurred in retrieving update information. Please try again later.".local
+                showAlert = true
+                print("⚠️ Update error: \(error)")
+            }
+        }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -79,7 +112,23 @@ struct SettingsView: View {
                                     .foregroundColor(.blue)
                             }).buttonStyle(.borderless)
                         }
-                    }.alert(isPresented: $showAlert) { Alert(title: Text(alertTitle), message: Text(alertMessage)) }
+                    }.alert(isPresented: $showAlert) {
+                        if alertTitle == "Update Available".local {
+                            Alert(
+                                title: Text(alertTitle),
+                                message: Text(alertMessage),
+                                primaryButton: .default(Text("Download")) {
+                                    if let urlString = updates.latest?.url,
+                                       let url = URL(string: urlString) {
+                                        UIApplication.shared.open(url)
+                                    }
+                                },
+                                secondaryButton: .cancel(Text("Cancel"))
+                            )
+                        } else {
+                            Alert(title: Text(alertTitle), message: Text(alertMessage))
+                        }
+                    }
                 }
                 Section(header: Text("Others").textCase(nil)) {
                     Picker("Remove Offline Devices", selection: $disappearTime) {
@@ -88,6 +137,15 @@ struct SettingsView: View {
                         Text("60" + " mins".local).tag(60)
                         Text("Never").tag(92233720368547758)
                     }
+                    Button(action: {
+                        checkForUpdates()
+                    }, label: {
+                        HStack {
+                            Spacer()
+                            Text("Check for Updates")
+                            Spacer()
+                        }
+                    }).buttonStyle(.borderless)
                 }
                 if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                     Section(header:

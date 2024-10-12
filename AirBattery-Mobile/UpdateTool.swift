@@ -9,7 +9,7 @@ import UIKit
 
 let currentSystemVersion = UIDevice.current.systemVersion
 let currentAppVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-let updateURL = "https://raw.githubusercontent.com/lihaoyun6/AirBattery-Mobile/refs/heads/main/update.json"
+let updateSource = "https://raw.githubusercontent.com/lihaoyun6/AirBattery-Mobile/refs/heads/main/update.json"
 
 struct updateData: Codable {
     let appName: String
@@ -22,7 +22,6 @@ struct updateInfo: Codable {
     let minOS: String
     let url: String
     let catalog: String
-    let download: Bool
 }
 
 func fetchUpdateData(from urlString: String, timeout: TimeInterval = 10.0, completion: @escaping (Result<updateData, Error>) -> Void) {
@@ -71,4 +70,8 @@ func getLatestSupportedVersion(for updateData: updateData) -> updateInfo? {
     return supportedUpdates.sorted {
         $0.version.compare($1.version, options: .numeric) == .orderedDescending
     }.first
+}
+
+class Updates: ObservableObject {
+    @Published var latest: updateInfo?
 }

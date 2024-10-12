@@ -32,3 +32,13 @@
 "Never" = "永不";
 "Remove Offline Devices" = "移除超时设备";
 " mins" = "分钟";
+"Update Available" = "发现可用更新";
+"has been released,\nthe current version is" = "已发布, 当前版本为";
+"Download" = "下载";
+"Cancel" = "取消";
+"Check for Updates" = "检查更新";
+"You're up to date" = "无需更新";
+"is currently the newest version available." = "就是当前的最新版本.";
+"Update Error!" = "更新错误!";
+"An error occurred in retrieving update information. Please try again later." = "获取升级信息时出现错误, 请稍后再试.";
+"Update" = "下载更新";

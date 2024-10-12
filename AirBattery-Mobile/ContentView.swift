@@ -9,13 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var netcastService: MultipeerService
+    @EnvironmentObject var updates: Updates
     @AppStorage("ncGroupID") var ncGroupID = ""
     
     @Binding var loading: Bool
     
     @State private var showPopover = false
-    @State private var showAlert = false
     @State private var showDebug = false
+    @State private var showAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     @State private var lineWidth = 4.4
@@ -39,6 +40,24 @@ struct ContentView: View {
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(.accentGreen)
                 Spacer()
+                if updates.latest != nil {
+                    Button(action: {
+                        if let urlString = updates.latest?.url,
+                           let url = URL(string: urlString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }, label: {
+                        Text("Update")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .frame(height: 28)
+                            .padding([.leading, .trailing], 12)
+                            .background(Color.myRed)
+                            .foregroundColor(Color(UIColor.systemGroupedBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style:.continuous))
+                    })
+                    .buttonStyle(.plain)
+                    .padding(.trailing, 3)
+                }
                 if ncGroupID != "" {
                     if loading {
                         ActivityIndicator()
@@ -222,7 +241,7 @@ struct ContentView: View {
         }
         .padding()
         .onAppear { startTimer() }
-        .sheet(isPresented: $showPopover) { SettingsView(netcastService: netcastService, isPresented: $showPopover).halfSheet() }
+        .sheet(isPresented: $showPopover) { SettingsView(isPresented: $showPopover).halfSheet() }
         .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
     }
 }
