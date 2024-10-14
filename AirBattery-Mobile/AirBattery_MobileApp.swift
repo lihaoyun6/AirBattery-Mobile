@@ -49,7 +49,7 @@ struct AirBatteryApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(loading: $loading)
+            ContentView(loading: $loading, showAlert: $showAlert, alertTitle: $alertTitle, alertMessage: $alertMessage)
                 .onAppear { checkForUpdates() }
                 .environmentObject(netcastService)
                 .environmentObject(updates)

@@ -11,15 +11,15 @@ struct ContentView: View {
     @EnvironmentObject var netcastService: MultipeerService
     @EnvironmentObject var updates: Updates
     @AppStorage("ncGroupID") var ncGroupID = ""
+    @AppStorage("batteryMode") var batteryMode = "circle"
     
     @Binding var loading: Bool
+    @Binding var showAlert: Bool
+    @Binding var alertTitle: String
+    @Binding var alertMessage: String
     
     @State private var showPopover = false
     @State private var showDebug = false
-    @State private var showAlert = false
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var lineWidth = 4.4
     @State private var currentTime = Date().timeIntervalSince1970
     
     @StateObject private var airBatteryModel = AirBatteryModel.shared
@@ -74,15 +74,15 @@ struct ContentView: View {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { loading = false }
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                             if data == airBatteryModel.devices {
-                                                //netcastService.stop()
-                                                //netcastService.resume()
                                                 netcastService.refeshAll()
                                             }
                                         }
                                     } else {
-                                        alertTitle = "No Wi-Fi Connection".local
-                                        alertMessage = "Please connect to Wi-Fi first!".local
-                                        showAlert = true
+                                        DispatchQueue.main.async {
+                                            alertTitle = "No Wi-Fi Connection".local
+                                            alertMessage = "Please connect to Wi-Fi first!".local
+                                            showAlert = true
+                                        }
                                     }
                                 }
                             }
@@ -111,7 +111,6 @@ struct ContentView: View {
                                     loading = false
                                 }
                             }
-                            .alert(isPresented: $showAlert) { Alert(title: Text(alertTitle), message: Text(alertMessage)) }
                     }
                     Button(action: {
                         showPopover = true
@@ -144,13 +143,23 @@ struct ContentView: View {
                 ScrollView(showsIndicators:false) {
                     ForEach(removeDuplicatesDevice(devices: Array(airBatteryModel.devices.values).flatMap { $0 }), id: \.self) { item in
                         HStack(spacing: 12) {
-                            Image(getDeviceIcon(item))
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 34, height: 34)
+                            ZStack {
+                                Image(getDeviceIcon(item))
+                                    .resizable()
+                                    .scaledToFit()
+                                if item.isCharging != 0 && batteryMode == "bar" {
+                                    Image(getDeviceIcon(item))
+                                        .resizable()
+                                        .scaledToFit()
+                                        .foregroundColor(Color(getPowerColor(item)))
+                                        .opacity(0.8)
+                                }
+                            }.frame(width: 34, height: 34)
                             VStack(alignment: .leading) {
                                 Text(item.deviceName)
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
                                 if item.realUpdate != 0.0 {
                                     Text(String(format: "Updated %d mins ago".local, Int((currentTime - item.realUpdate) / 60)))
                                         .font(.system(size: 11, weight: .medium, design: .rounded))
@@ -171,52 +180,40 @@ struct ContentView: View {
                                  }*/
                             }
                             Spacer()
-                            ZStack{
-                                Group {
-                                    Group {
-                                        Circle()
-                                            .stroke(lineWidth: lineWidth)
-                                            .opacity(0.15)
-                                        Circle()
-                                            .trim(from: 0.0, to: CGFloat(min(Double(item.batteryLevel)/100.0, 0.5)))
-                                            .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                                            .foregroundColor(Color(getPowerColor(item)))
-                                        Circle()
-                                            .trim(from: CGFloat(abs((min(Double(item.batteryLevel)/100.0, 1.0))-0.001)), to: CGFloat(abs((min(Double(item.batteryLevel)/100.0, 1.0))-0.0005)))
-                                            .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                                            .foregroundColor(Color(getPowerColor(item)))
-                                            .shadow(color: .black, radius: lineWidth*0.76, x: 0, y: 0)
-                                            .clipShape( Circle().stroke(lineWidth: lineWidth) )
-                                        Circle()
-                                            .trim(from: item.batteryLevel > 50 ? 0.25 : 0, to: CGFloat(min(Double(item.batteryLevel)/100.0, 1.0)))
-                                            .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
-                                            .foregroundColor(Color(getPowerColor(item)))
-                                    }.rotationEffect(Angle(degrees: 270.0))
-                                    
-                                    Text(item.hasBattery ? "\(item.batteryLevel)" : "")
-                                        .font(.system(size: 12, weight: .bold, design: .rounded))
-                                        .offset(y: 0.5)
-                                    
+                            switch batteryMode {
+                            case "battery":
+                                BatteryView(item: item)
+                            case "bar":
+                                ZStack {
+                                    Text(item.hasBattery ? "\(item.batteryLevel)%" : "?")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
                                     if item.isCharging != 0 {
-                                        Image("batt_bolt_mask")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 11, alignment: .center)
-                                            .blendMode(.destinationOut)
-                                            .offset(y:-16.5)
-                                        Image("batt_bolt")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 11, alignment: .center)
-                                            .foregroundColor(item.batteryLevel == 100 ? Color("my_green") : Color.primary)
-                                            .offset(y:-16.5)
+                                        Text(item.hasBattery ? "\(item.batteryLevel)%" : "?")
+                                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                                            .foregroundColor(Color(getPowerColor(item)))
+                                            .opacity(0.8)
                                     }
-                                }.frame(width: 34, height: 34, alignment: .center)
-                            }.compositingGroup()
+                                }
+                            default:
+                                CircleView(item: item)
+                            }
                         }
                         .padding([.top, .bottom], 12)
                         .padding([.leading, .trailing], 20)
-                        .background(Color("WidgetBackground"))
+                        .background(
+                            GeometryReader { geometry in
+                                ZStack {
+                                    Color("WidgetBackground")
+                                    if batteryMode == "bar" {
+                                        let width = CGFloat(max(10, Int(Double(item.batteryLevel)/100*geometry.size.width)))
+                                        RoundedRectangle(cornerRadius: 16, style:.continuous)
+                                            .fill(Color(getPowerColor(item)).opacity(0.2))
+                                            .frame(width: width)
+                                            .padding(.trailing, geometry.size.width - width)
+                                    }
+                                }
+                            }
+                        )
                         .clipShape(RoundedRectangle(cornerRadius: 16, style:.continuous))
                     }
                 }

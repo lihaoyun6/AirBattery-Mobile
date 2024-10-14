@@ -14,6 +14,7 @@ struct SettingsView: View {
     @EnvironmentObject var updates: Updates
     @AppStorage("ncGroupID") var ncGroupID = ""
     @AppStorage("disappearTime") var disappearTime = 20
+    @AppStorage("batteryMode") var batteryMode = "circle"
     
     @Binding var isPresented: Bool
     
@@ -131,6 +132,11 @@ struct SettingsView: View {
                     }
                 }
                 Section(header: Text("Others").textCase(nil)) {
+                    Picker("Battery Style", selection: $batteryMode) {
+                        Text("Circle".local).tag("circle")
+                        Text("Battery".local).tag("battery")
+                        Text("Bar".local).tag("bar")
+                    }
                     Picker("Remove Offline Devices", selection: $disappearTime) {
                         Text("20" + " mins".local).tag(20)
                         Text("40" + " mins".local).tag(40)

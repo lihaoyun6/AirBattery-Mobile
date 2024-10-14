@@ -42,3 +42,7 @@
 "Update Error!" = "更新错误!";
 "An error occurred in retrieving update information. Please try again later." = "获取升级信息时出现错误, 请稍后再试.";
 "Update" = "下载更新";
+"Battery Style" = "电池样式";
+"Circle" = "环状";
+"Battery" = "电池";
+"Bar" = "条形";
