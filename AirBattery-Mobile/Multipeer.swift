@@ -108,11 +108,9 @@ func removeDuplicatesPeer(peers: [Peer]) -> [Peer] {
 
 
 func isGroudIDValid(id: String) -> Bool {
-    let pre = NSPredicate(format: "SELF MATCHES %@", "^[a-z0-9\\-]+$")
-    let pre2 = NSPredicate(format: "SELF MATCHES %@", "^[a-zA-Z0-9\\-]+$")
-    let ncid = pre.evaluate(with: String(id.prefix(15)))
-    let pasd = pre2.evaluate(with: id)
-    return (id.count == 23 && String(id.prefix(3)) == "nc-" && ncid && pasd)
+    let pre = NSPredicate(format: "SELF MATCHES %@", "^[a-zA-Z0-9\\-]+$")
+    let pasd = pre.evaluate(with: id)
+    return (id.count == 23 && String(id.prefix(3)) == "nc-" && pasd)
 }
 
 func substring(from string: String, start: Int, length: Int) -> String? {

@@ -42,10 +42,10 @@ func getDeviceIcon(_ d: Device) -> String {
         return "computermouse.fill"
     case "Gamepad":
         return "gamecontroller.fill"
-    case "Headphones":
+    case "Headphones", "Headset":
         return "headphones"
-    case "Headset":
-        return "headphones"
+    case "Speaker":
+        return "hifispeaker.fill"
     case "ApplePencil":
         ///Model list: https://theapplewiki.com/wiki/List_of_Apple_Pencils
         if let model = d.deviceModel {
@@ -250,7 +250,7 @@ func getDeviceIcon(_ d: Device) -> String {
     case "macpro":
         if let icon = macProList[d.deviceModel ?? ""] { return icon }
         return "macpro.gen3.fill"
-    case "imac":
+    case "imac", "imacpro":
         return "desktopcomputer"
     default:
         return "questionmark.circle.fill"
